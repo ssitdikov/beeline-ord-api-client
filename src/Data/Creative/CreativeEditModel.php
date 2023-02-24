@@ -54,18 +54,16 @@ class CreativeEditModel implements \JsonSerializable
         $this->isReadyForErir = $isReadyForErir;
         $this->initialContractId = $initialContractId;
         $this->validate([
-            [
-                'urls' => [
-                    'should be at least one' => fn (array $urls) => \count($urls) > 0,
-                    'should be [ {url: ...}, ]' => function (array $urls) {
-                        foreach ($urls as $url) {
-                            if (!\is_array($url) || !isset($url['url'])) {
-                                return false;
-                            }
+            'urls' => [
+                'should be at least one' => fn (array $urls) => \count($urls) > 0,
+                'should be [ {url: ...}, ]' => function (array $urls) {
+                    foreach ($urls as $url) {
+                        if (!\is_array($url) || !isset($url['url'])) {
+                            return false;
                         }
-                        return true;
-                    },
-                ],
+                    }
+                    return true;
+                },
             ],
         ]);
     }
@@ -201,8 +199,8 @@ class CreativeEditModel implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["type"],
             $constructorParams["form"],

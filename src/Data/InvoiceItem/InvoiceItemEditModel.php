@@ -97,8 +97,8 @@ class InvoiceItemEditModel implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["amount"],
             $constructorParams["isVat"],

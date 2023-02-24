@@ -62,8 +62,8 @@ class CreativeContentUploadResultFileError implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["fileName"] ?? null,
             $constructorParams["error"] ?? null

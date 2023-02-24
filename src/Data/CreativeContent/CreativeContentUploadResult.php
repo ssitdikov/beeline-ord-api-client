@@ -82,8 +82,8 @@ class CreativeContentUploadResult implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["filesCount"] ?? null,
             $constructorParams["uploadedFilesCount"] ?? null,

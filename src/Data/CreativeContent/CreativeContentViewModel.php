@@ -109,8 +109,8 @@ class CreativeContentViewModel extends CreativeContentCreateModel implements \Js
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["creativeId"],
             $constructorParams["id"],

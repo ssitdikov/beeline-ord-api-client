@@ -86,8 +86,8 @@ class InitialContract implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["id"],
             $constructorParams["number"] ?? null,

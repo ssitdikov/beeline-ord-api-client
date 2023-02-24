@@ -107,8 +107,8 @@ class CreativeListModel implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["id"],
             $constructorParams["description"],

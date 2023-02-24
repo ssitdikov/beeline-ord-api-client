@@ -90,8 +90,8 @@ class InvoiceItemViewModel extends InvoiceItemCreateModel implements \JsonSerial
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["amount"],
             $constructorParams["isVat"],

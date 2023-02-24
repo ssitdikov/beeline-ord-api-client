@@ -133,8 +133,8 @@ class ContractViewModel extends ContractEditModel implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["type"],
             $constructorParams["executorIsObligedForRegistration"],

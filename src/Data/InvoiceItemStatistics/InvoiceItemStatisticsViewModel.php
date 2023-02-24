@@ -94,8 +94,8 @@ class InvoiceItemStatisticsViewModel extends InvoiceItemStatisticsCreateModel im
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["actualImpressionsCount"],
             $constructorParams["plannedImpressionsCount"],

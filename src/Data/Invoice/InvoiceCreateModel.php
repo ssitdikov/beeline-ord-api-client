@@ -106,8 +106,8 @@ class InvoiceCreateModel extends InvoiceEditModel implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["date"],
             $constructorParams["startDate"],

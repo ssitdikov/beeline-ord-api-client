@@ -28,15 +28,11 @@ use Psr\Http\Message\RequestInterface as HttpRequestInterface;
 use Psr\Http\Message\ResponseInterface as HttpResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class ApiClient implements LoggerAwareInterface
+class ApiClient
 {
-    use LoggerAwareTrait;
-
     protected string $apiEndpoint = 'https://ord.beeline.ru/ordapi';
 
     protected HttpClientInterface $httpClient;
@@ -57,12 +53,10 @@ class ApiClient implements LoggerAwareInterface
         LoggerInterface     $logger = null
     )
     {
-        $this->logger = $logger ?: new NullLogger();
-
         $httpClientBuilder = new PluginClientBuilder();
-        if (class_exists(LoggerPlugin::class)) {
+        if ($logger instanceof LoggerInterface && class_exists(LoggerPlugin::class)) {
             $httpClientBuilder
-                ->addPlugin(new LoggerPlugin($this->logger, new FullHttpMessageFormatter()));
+                ->addPlugin(new LoggerPlugin($logger, new FullHttpMessageFormatter()));
         }
 
         $this->httpClient = $httpClientBuilder->createClient($httpClient ?: Psr18ClientDiscovery::find());
@@ -82,15 +76,6 @@ class ApiClient implements LoggerAwareInterface
     public function getToken(): AuthorizationToken
     {
         return $this->authHttpClient->getToken();
-    }
-
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-        $this->authHttpClient->setLogger($logger);
-        if ($this->httpClient instanceof LoggerAwareInterface) {
-            $this->httpClient->setLogger($logger);
-        }
     }
 
     public function auth(): AuthorizationEndpoint

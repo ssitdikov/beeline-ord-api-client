@@ -22,18 +22,16 @@ class CreativeContentEditModel implements \JsonSerializable
         $this->textData = $textData;
         $this->hash = $hash;
         $this->validate([
-            [
-                'hash' => [
-                    '#1' => function () {
-                        /**
-                        * @var $this \BeelineOrd\Data\CreativeContent\CreativeContentEditModel
-                        * @psalm-suppress InvalidScope
-                        */
-                        if ($this->textData !== null && $this->hash === null) {
-                            $this->hash = \hash('sha256', $this->textData);
-                        }
-                    },
-                ],
+            'hash' => [
+                '#1' => function () {
+                    /**
+                    * @var $this \BeelineOrd\Data\CreativeContent\CreativeContentEditModel
+                    * @psalm-suppress InvalidScope
+                    */
+                    if ($this->textData !== null && $this->hash === null) {
+                        $this->hash = \hash('sha256', $this->textData);
+                    }
+                },
             ],
         ]);
     }
@@ -84,8 +82,8 @@ class CreativeContentEditModel implements \JsonSerializable
             }
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         // create
+        /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["textData"] ?? null,
             $constructorParams["hash"] ?? null

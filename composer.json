@@ -17,20 +17,24 @@
     "minimum-stability": "stable",
     "require": {
         "php": "7.4 || >=8",
+        "ext-hash": "*",
+        "psr/log": "*",
         "psr/http-message": "^1.0",
         "psr/http-client": "^1.0",
-        "php-http/client-implementation": "^1.0",
+        "psr/http-factory": "^1.0",
         "php-http/discovery": "^1.0",
+        "php-http/client-implementation": "^1.0",
         "php-http/httplug": "^2.0",
+        "php-http/message": "^1.0",
         "php-http/message-factory": "^1.0",
-        "psr/log": "^3.0",
+        "php-http/client-common": "^2.6",
+        "php-http/logger-plugin": "^1.3",
         "php-http/multipart-stream-builder": "^1.2"
     },
     "require-dev": {
-        "klkvsk/dto-generator": "^0.5.1",
+        "klkvsk/dto-generator": "^0.5.4",
         "php-http/mock-client": "^1.5",
         "php-http/curl-client": "^2.2",
-        "php-http/logger-plugin": "^1.3",
         "nyholm/psr7": "^1.5",
         "phpunit/phpunit": "^10.0",
         "vimeo/psalm": "^5.7"
