@@ -12,8 +12,9 @@ namespace BeelineOrd\Data\Contract;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class ContractViewModel extends ContractEditModel implements \JsonSerializable
+class ContractViewModel extends ContractModel implements \JsonSerializable
 {
+    protected ?int $parentContractId;
     protected ?\DateTimeInterface $erirExportedOn;
     protected ?\DateTimeInterface $erirPlannedExportDate;
 
@@ -25,7 +26,6 @@ class ContractViewModel extends ContractEditModel implements \JsonSerializable
         string $number,
         \DateTimeInterface $date,
         bool $isVat,
-        bool $isReadyForErir,
         ?float $amount = null,
         ?int $parentContractId = null,
         ?int $customerId = null,
@@ -48,7 +48,6 @@ class ContractViewModel extends ContractEditModel implements \JsonSerializable
             $number,
             $date,
             $isVat,
-            $isReadyForErir,
             $amount,
             $parentContractId,
             $customerId,
@@ -61,8 +60,14 @@ class ContractViewModel extends ContractEditModel implements \JsonSerializable
             $executorName,
             $executorType
         );
+        $this->parentContractId = $parentContractId;
         $this->erirExportedOn = $erirExportedOn;
         $this->erirPlannedExportDate = $erirPlannedExportDate;
+    }
+
+    public function getParentContractId(): ?int
+    {
+        return $this->parentContractId;
     }
 
     public function getErirExportedOn(): ?\DateTimeInterface
@@ -97,6 +102,10 @@ class ContractViewModel extends ContractEditModel implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
+            case "parentContractId":
+                yield \Closure::fromCallable('intval');
+                break;
+
             case "erirExportedOn":
             case "erirPlannedExportDate":
                 yield static fn ($d) => new \DateTimeImmutable($d);
@@ -143,7 +152,6 @@ class ContractViewModel extends ContractEditModel implements \JsonSerializable
             $constructorParams["number"],
             $constructorParams["date"],
             $constructorParams["isVat"],
-            $constructorParams["isReadyForErir"],
             $constructorParams["amount"] ?? null,
             $constructorParams["parentContractId"] ?? null,
             $constructorParams["customerId"] ?? null,

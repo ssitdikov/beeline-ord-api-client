@@ -116,8 +116,10 @@ return dto\schema(
         ),
         dto\object(
             name: 'Contract\\ContractViewModel',
-            extends: 'Contract\\ContractEditModel',
+            extends: 'Contract\\ContractModel',
             fields: [
+                dto\field('parentContractId', t\int()),
+
                 // not in doc, but in api response:
                 dto\field('erirExportedOn', t\date()),
                 dto\field('erirPlannedExportDate', t\date()),
