@@ -79,8 +79,12 @@ final class CreativeType implements \JsonSerializable
         return self::from('PayForClicks');
     }
 
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
+    {
+        return $this->value;
+    }
+
+    public function __toString()
     {
         return $this->value;
     }

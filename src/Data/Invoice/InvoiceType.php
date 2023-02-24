@@ -73,8 +73,12 @@ final class InvoiceType implements \JsonSerializable
         return self::from('Manual');
     }
 
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
+    {
+        return $this->value;
+    }
+
+    public function __toString()
     {
         return $this->value;
     }

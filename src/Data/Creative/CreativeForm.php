@@ -109,8 +109,12 @@ final class CreativeForm implements \JsonSerializable
         return self::from('Other');
     }
 
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
+    {
+        return $this->value;
+    }
+
+    public function __toString()
     {
         return $this->value;
     }
