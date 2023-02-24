@@ -16,7 +16,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "7.4 || >=8",
+        "php": "^7.4 || >=8",
         "ext-hash": "*",
         "psr/log": "*",
         "psr/http-message": "^1.0",
