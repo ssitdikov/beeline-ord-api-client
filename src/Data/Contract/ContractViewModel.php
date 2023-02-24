@@ -14,6 +14,7 @@ namespace BeelineOrd\Data\Contract;
  */
 class ContractViewModel extends ContractModel implements \JsonSerializable
 {
+    protected int $id;
     protected ?int $parentContractId;
     protected ?\DateTimeInterface $erirExportedOn;
     protected ?\DateTimeInterface $erirPlannedExportDate;
@@ -26,6 +27,7 @@ class ContractViewModel extends ContractModel implements \JsonSerializable
         string $number,
         \DateTimeInterface $date,
         bool $isVat,
+        int $id,
         ?float $amount = null,
         ?int $parentContractId = null,
         ?int $customerId = null,
@@ -60,9 +62,15 @@ class ContractViewModel extends ContractModel implements \JsonSerializable
             $executorName,
             $executorType
         );
+        $this->id = $id;
         $this->parentContractId = $parentContractId;
         $this->erirExportedOn = $erirExportedOn;
         $this->erirPlannedExportDate = $erirPlannedExportDate;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function getParentContractId(): ?int
@@ -92,7 +100,7 @@ class ContractViewModel extends ContractModel implements \JsonSerializable
     {
         return array_merge(
             method_exists(parent::class, "required") ? parent::required() : [],
-            []
+            ['id']
         );
     }
 
@@ -102,6 +110,7 @@ class ContractViewModel extends ContractModel implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
+            case "id":
             case "parentContractId":
                 yield \Closure::fromCallable('intval');
                 break;
@@ -152,6 +161,7 @@ class ContractViewModel extends ContractModel implements \JsonSerializable
             $constructorParams["number"],
             $constructorParams["date"],
             $constructorParams["isVat"],
+            $constructorParams["id"],
             $constructorParams["amount"] ?? null,
             $constructorParams["parentContractId"] ?? null,
             $constructorParams["customerId"] ?? null,

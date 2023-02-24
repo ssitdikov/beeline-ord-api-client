@@ -118,6 +118,7 @@ return dto\schema(
             name: 'Contract\\ContractViewModel',
             extends: 'Contract\\ContractModel',
             fields: [
+                dto\field('id', t\int(), true),
                 dto\field('parentContractId', t\int()),
 
                 // not in doc, but in api response:
