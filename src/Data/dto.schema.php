@@ -143,6 +143,12 @@ return dto\schema(
                 dto\field('erid', t\string(), true),
             ]
         ),
+        dto\object(
+            name: 'Creative\\CreativeUrl',
+            fields: [
+                dto\field('url', t\string(), true),
+            ]
+        ),
 
         dto\object(
             name: 'Creative\\CreativeEditModel',
@@ -152,19 +158,7 @@ return dto\schema(
                 dto\field('description', t\string(), true),
                 dto\field('isSocial', t\bool(), true),
                 dto\field('isNative', t\bool(), true),
-                dto\field('urls', t\list_(t\mixed()), true,
-                    validators: [
-                        'should be at least one' => fn (array $urls) => count($urls) > 0,
-                        'should be [ {url: ...}, ]' => function (array $urls) {
-                            foreach ($urls as $url) {
-                                if (!is_array($url) || !isset($url['url'])) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        }
-                    ]
-                ),
+                dto\field('urls', t\list_(t\object('Creative\\CreativeUrl')), true),
                 dto\field('okveds', t\list_(t\string())),
                 dto\field('targetAudienceDescription', t\string()),
                 dto\field('isReadyForErir', t\bool(), true),
@@ -197,10 +191,9 @@ return dto\schema(
                 dto\field('description', t\string(), true),
                 dto\field('isSocial', t\bool(), true),
                 dto\field('isNative', t\bool(), true),
-                dto\field('urls', t\list_(t\string()), true),
+                dto\field('urls', t\list_(t\object('Creative\\CreativeUrl')), true),
                 dto\field('okveds', t\list_(t\string())),
                 dto\field('targetAudienceDescription', t\string()),
-                dto\field('isReadyForErir', t\bool(), true),
                 dto\field('initialContractId', t\int(), true),
                 dto\field('organizationId', t\int()),
             ]

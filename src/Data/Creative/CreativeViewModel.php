@@ -20,13 +20,12 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
     protected bool $isSocial;
     protected bool $isNative;
 
-    /** @var array<string> $urls */
+    /** @var array<CreativeUrl> $urls */
     protected array $urls;
 
-    /** @var array<string> $okveds */
-    protected array $okveds;
+    /** @var ?array<string> $okveds */
+    protected ?array $okveds;
     protected ?string $targetAudienceDescription;
-    protected bool $isReadyForErir;
     protected int $initialContractId;
     protected ?int $organizationId;
 
@@ -38,12 +37,11 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
         CreativeForm $form,
         bool $isSocial,
         bool $isNative,
-        bool $isReadyForErir,
         int $initialContractId,
         ?\DateTimeInterface $erirExportedOn = null,
         ?\DateTimeInterface $erirPlannedExportDate = null,
         array $urls = [],
-        array $okveds = [],
+        ?array $okveds = [],
         ?string $targetAudienceDescription = null,
         ?int $organizationId = null
     ) {
@@ -53,12 +51,11 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
         $this->description = $description;
         $this->isSocial = $isSocial;
         $this->isNative = $isNative;
-        (function(string ...$_) {})( ...$urls);
+        $urls && (function(CreativeUrl ...$_) {})( ...$urls);
         $this->urls = $urls;
-        (function(string ...$_) {})( ...$okveds);
+        $okveds && (function(string ...$_) {})( ...$okveds);
         $this->okveds = $okveds;
         $this->targetAudienceDescription = $targetAudienceDescription;
-        $this->isReadyForErir = $isReadyForErir;
         $this->initialContractId = $initialContractId;
         $this->organizationId = $organizationId;
     }
@@ -89,7 +86,7 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
     }
 
     /**
-     * @return array<string>
+     * @return array<CreativeUrl>
      */
     public function getUrls(): array
     {
@@ -97,9 +94,9 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
     }
 
     /**
-     * @return array<string>
+     * @return ?array<string>
      */
-    public function getOkveds(): array
+    public function getOkveds(): ?array
     {
         return $this->okveds;
     }
@@ -107,11 +104,6 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
     public function getTargetAudienceDescription(): ?string
     {
         return $this->targetAudienceDescription;
-    }
-
-    public function getIsReadyForErir(): bool
-    {
-        return $this->isReadyForErir;
     }
 
     public function getInitialContractId(): int
@@ -136,7 +128,7 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
     {
         return array_merge(
             method_exists(parent::class, "required") ? parent::required() : [],
-            ['type', 'form', 'description', 'isSocial', 'isNative', 'urls', 'isReadyForErir', 'initialContractId']
+            ['type', 'form', 'description', 'isSocial', 'isNative', 'urls', 'initialContractId']
         );
     }
 
@@ -161,11 +153,16 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
 
             case "isSocial":
             case "isNative":
-            case "isReadyForErir":
                 yield \Closure::fromCallable('boolval');
                 break;
 
             case "urls":
+                yield fn ($array) => array_map(
+                    fn ($data) => call_user_func([ '\BeelineOrd\Data\Creative\CreativeUrl', 'create' ], $data),
+                    (array)$array
+                );
+                break;
+
             case "okveds":
                 yield fn ($array) => array_map(
                     \Closure::fromCallable('strval'),
@@ -219,12 +216,11 @@ class CreativeViewModel extends CreativeListModel implements \JsonSerializable
             $constructorParams["form"],
             $constructorParams["isSocial"],
             $constructorParams["isNative"],
-            $constructorParams["isReadyForErir"],
             $constructorParams["initialContractId"],
             $constructorParams["erirExportedOn"] ?? null,
             $constructorParams["erirPlannedExportDate"] ?? null,
             $constructorParams["urls"],
-            $constructorParams["okveds"],
+            $constructorParams["okveds"] ?? null,
             $constructorParams["targetAudienceDescription"] ?? null,
             $constructorParams["organizationId"] ?? null
         );

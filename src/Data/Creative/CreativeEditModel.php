@@ -20,11 +20,11 @@ class CreativeEditModel implements \JsonSerializable
     protected bool $isSocial;
     protected bool $isNative;
 
-    /** @var array<mixed> $urls */
+    /** @var array<CreativeUrl> $urls */
     protected array $urls;
 
-    /** @var array<string> $okveds */
-    protected array $okveds;
+    /** @var ?array<string> $okveds */
+    protected ?array $okveds;
     protected ?string $targetAudienceDescription;
     protected bool $isReadyForErir;
     protected int $initialContractId;
@@ -38,7 +38,7 @@ class CreativeEditModel implements \JsonSerializable
         bool $isReadyForErir,
         int $initialContractId,
         array $urls = [],
-        array $okveds = [],
+        ?array $okveds = [],
         ?string $targetAudienceDescription = null
     ) {
         $this->type = $type;
@@ -46,26 +46,13 @@ class CreativeEditModel implements \JsonSerializable
         $this->description = $description;
         $this->isSocial = $isSocial;
         $this->isNative = $isNative;
-        (function( ...$_) {})( ...$urls);
+        $urls && (function(CreativeUrl ...$_) {})( ...$urls);
         $this->urls = $urls;
-        (function(string ...$_) {})( ...$okveds);
+        $okveds && (function(string ...$_) {})( ...$okveds);
         $this->okveds = $okveds;
         $this->targetAudienceDescription = $targetAudienceDescription;
         $this->isReadyForErir = $isReadyForErir;
         $this->initialContractId = $initialContractId;
-        $this->validate([
-            'urls' => [
-                'should be at least one' => fn (array $urls) => \count($urls) > 0,
-                'should be [ {url: ...}, ]' => function (array $urls) {
-                    foreach ($urls as $url) {
-                        if (!\is_array($url) || !isset($url['url'])) {
-                            return false;
-                        }
-                    }
-                    return true;
-                },
-            ],
-        ]);
     }
 
     public function getType(): CreativeType
@@ -94,7 +81,7 @@ class CreativeEditModel implements \JsonSerializable
     }
 
     /**
-     * @return array<mixed>
+     * @return array<CreativeUrl>
      */
     public function getUrls(): array
     {
@@ -102,9 +89,9 @@ class CreativeEditModel implements \JsonSerializable
     }
 
     /**
-     * @return array<string>
+     * @return ?array<string>
      */
-    public function getOkveds(): array
+    public function getOkveds(): ?array
     {
         return $this->okveds;
     }
@@ -122,13 +109,6 @@ class CreativeEditModel implements \JsonSerializable
     public function getInitialContractId(): int
     {
         return $this->initialContractId;
-    }
-
-    protected function validate(array $rules): void
-    {
-        array_walk($rules, fn(&$vs, $f) => array_walk($vs, fn(&$v) => $v = false === call_user_func($v, $this->{$f})));
-        $failedRules = array_filter(array_map(fn($r) => array_keys(array_filter($r)), $rules));
-        if ($failedRules) throw new \InvalidArgumentException(json_encode($failedRules));
     }
 
     protected static function required(): array
@@ -162,7 +142,10 @@ class CreativeEditModel implements \JsonSerializable
                 break;
 
             case "urls":
-                yield static fn ($array) => (array)$array;
+                yield fn ($array) => array_map(
+                    fn ($data) => call_user_func([ '\BeelineOrd\Data\Creative\CreativeUrl', 'create' ], $data),
+                    (array)$array
+                );
                 break;
 
             case "okveds":
@@ -210,7 +193,7 @@ class CreativeEditModel implements \JsonSerializable
             $constructorParams["isReadyForErir"],
             $constructorParams["initialContractId"],
             $constructorParams["urls"],
-            $constructorParams["okveds"],
+            $constructorParams["okveds"] ?? null,
             $constructorParams["targetAudienceDescription"] ?? null
         );
     }

@@ -21,8 +21,8 @@ class UserViewModel implements \JsonSerializable
     protected ?string $email;
     protected ?string $role;
 
-    /** @var array<string> $permissions */
-    protected array $permissions;
+    /** @var ?array<string> $permissions */
+    protected ?array $permissions;
 
     public function __construct(
         ?int $id = null,
@@ -31,7 +31,7 @@ class UserViewModel implements \JsonSerializable
         ?string $inn = null,
         ?string $email = null,
         ?string $role = null,
-        array $permissions = []
+        ?array $permissions = []
     ) {
         $this->id = $id;
         $this->organizationId = $organizationId;
@@ -39,7 +39,7 @@ class UserViewModel implements \JsonSerializable
         $this->inn = $inn;
         $this->email = $email;
         $this->role = $role;
-        (function(string ...$_) {})( ...$permissions);
+        $permissions && (function(string ...$_) {})( ...$permissions);
         $this->permissions = $permissions;
     }
 
@@ -74,9 +74,9 @@ class UserViewModel implements \JsonSerializable
     }
 
     /**
-     * @return array<string>
+     * @return ?array<string>
      */
-    public function getPermissions(): array
+    public function getPermissions(): ?array
     {
         return $this->permissions;
     }
@@ -133,7 +133,7 @@ class UserViewModel implements \JsonSerializable
             $constructorParams["inn"] ?? null,
             $constructorParams["email"] ?? null,
             $constructorParams["role"] ?? null,
-            $constructorParams["permissions"]
+            $constructorParams["permissions"] ?? null
         );
     }
 

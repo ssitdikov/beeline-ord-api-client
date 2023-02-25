@@ -17,14 +17,14 @@ class CreativeContentUploadResult implements \JsonSerializable
     protected ?int $filesCount;
     protected ?int $uploadedFilesCount;
 
-    /** @var array<CreativeContentUploadResultFileError> $fileErrors */
-    protected array $fileErrors;
+    /** @var ?array<CreativeContentUploadResultFileError> $fileErrors */
+    protected ?array $fileErrors;
 
-    public function __construct(?int $filesCount = null, ?int $uploadedFilesCount = null, array $fileErrors = [])
+    public function __construct(?int $filesCount = null, ?int $uploadedFilesCount = null, ?array $fileErrors = [])
     {
         $this->filesCount = $filesCount;
         $this->uploadedFilesCount = $uploadedFilesCount;
-        (function(CreativeContentUploadResultFileError ...$_) {})( ...$fileErrors);
+        $fileErrors && (function(CreativeContentUploadResultFileError ...$_) {})( ...$fileErrors);
         $this->fileErrors = $fileErrors;
     }
 
@@ -39,9 +39,9 @@ class CreativeContentUploadResult implements \JsonSerializable
     }
 
     /**
-     * @return array<CreativeContentUploadResultFileError>
+     * @return ?array<CreativeContentUploadResultFileError>
      */
-    public function getFileErrors(): array
+    public function getFileErrors(): ?array
     {
         return $this->fileErrors;
     }
@@ -87,7 +87,7 @@ class CreativeContentUploadResult implements \JsonSerializable
         return new static(
             $constructorParams["filesCount"] ?? null,
             $constructorParams["uploadedFilesCount"] ?? null,
-            $constructorParams["fileErrors"]
+            $constructorParams["fileErrors"] ?? null
         );
     }
 
