@@ -14,12 +14,35 @@ namespace BeelineOrd\Data\Creative;
  *
  * ---
  *
+ * Readonly properties:
  * @property-read string $name
  * @property-read string $value
+ *
+ * Cases:
+ * @method static CreativeForm BANNER
+ * @method static CreativeForm TEXT_BLOCK
+ * @method static CreativeForm TEXT_GRAPHIC_BLOCK
+ * @method static CreativeForm VIDEO
+ * @method static CreativeForm AUDIO_RECORD
+ * @method static CreativeForm LIVE_AUDIO
+ * @method static CreativeForm LIVE_VIDEO
+ * @method static CreativeForm OTHER
  */
 final class CreativeForm implements \JsonSerializable
 {
-    private static ?array $map;
+    private static array $instances = [];
+
+    private static array $cases = [
+        'BANNER' => 'Banner',
+        'TEXT_BLOCK' => 'TextBlock',
+        'TEXT_GRAPHIC_BLOCK' => 'TextGraphicBlock',
+        'VIDEO' => 'Video',
+        'AUDIO_RECORD' => 'AudioRecord',
+        'LIVE_AUDIO' => 'LiveAudio',
+        'LIVE_VIDEO' => 'LiveVideo',
+        'OTHER' => 'Other',
+    ];
+
     private string $name;
     private string $value;
 
@@ -34,35 +57,47 @@ final class CreativeForm implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return self::$map = self::$map ?? [
-            new self('BANNER', 'Banner'),
-            new self('TEXT_BLOCK', 'TextBlock'),
-            new self('TEXT_GRAPHIC_BLOCK', 'TextGraphicBlock'),
-            new self('VIDEO', 'Video'),
-            new self('AUDIO_RECORD', 'AudioRecord'),
-            new self('LIVE_AUDIO', 'LiveAudio'),
-            new self('LIVE_VIDEO', 'LiveVideo'),
-            new self('OTHER', 'Other'),
+        return [
+            self::BANNER(),
+            self::TEXT_BLOCK(),
+            self::TEXT_GRAPHIC_BLOCK(),
+            self::VIDEO(),
+            self::AUDIO_RECORD(),
+            self::LIVE_AUDIO(),
+            self::LIVE_VIDEO(),
+            self::OTHER(),
         ];
     }
 
-    public function __get($propertyName)
+    public function __get($name)
     {
-        switch ($propertyName) {
+        switch ($name) {
             case "name":
                 return $this->name;
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: CreativeForm::$propertyName");
+                trigger_error("Undefined property: CreativeForm::$name", E_USER_WARNING);
                 return null;
         }
     }
 
+    public static function __callStatic($name, $args)
+    {
+        $instance = self::$instances[$name] ?? null;
+        if ($instance === null) {
+            if (!array_key_exists($name, self::$cases)) {
+                throw new \ValueError("unknown case 'CreativeForm::$name'");
+            }
+            self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
+        }
+        return $instance;
+    }
+
     public static function tryFrom(string $value): ?self
     {
-        $cases = self::cases();
-        return $cases[$value] ?? null;
+        $case = array_search($value, self::$cases, true);
+        return $case ? self::$case() : null;
     }
 
     public static function from(string $value): self
@@ -75,46 +110,6 @@ final class CreativeForm implements \JsonSerializable
             ));
         }
         return $case;
-    }
-
-    public static function BANNER(): self
-    {
-        return self::from('Banner');
-    }
-
-    public static function TEXT_BLOCK(): self
-    {
-        return self::from('TextBlock');
-    }
-
-    public static function TEXT_GRAPHIC_BLOCK(): self
-    {
-        return self::from('TextGraphicBlock');
-    }
-
-    public static function VIDEO(): self
-    {
-        return self::from('Video');
-    }
-
-    public static function AUDIO_RECORD(): self
-    {
-        return self::from('AudioRecord');
-    }
-
-    public static function LIVE_AUDIO(): self
-    {
-        return self::from('LiveAudio');
-    }
-
-    public static function LIVE_VIDEO(): self
-    {
-        return self::from('LiveVideo');
-    }
-
-    public static function OTHER(): self
-    {
-        return self::from('Other');
     }
 
     public function jsonSerialize(): string

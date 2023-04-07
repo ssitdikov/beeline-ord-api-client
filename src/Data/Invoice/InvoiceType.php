@@ -14,12 +14,18 @@ namespace BeelineOrd\Data\Invoice;
  *
  * ---
  *
+ * Readonly properties:
  * @property-read string $name
  * @property-read string $value
+ *
+ * Cases:
+ * @method static InvoiceType STATISTICS
+ * @method static InvoiceType MANUAL
  */
 final class InvoiceType implements \JsonSerializable
 {
-    private static ?array $map;
+    private static array $instances = [];
+    private static array $cases = ['STATISTICS' => 'Statistics', 'MANUAL' => 'Manual'];
     private string $name;
     private string $value;
 
@@ -34,26 +40,38 @@ final class InvoiceType implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return self::$map = self::$map ?? [new self('STATISTICS', 'Statistics'), new self('MANUAL', 'Manual')];
+        return [self::STATISTICS(), self::MANUAL()];
     }
 
-    public function __get($propertyName)
+    public function __get($name)
     {
-        switch ($propertyName) {
+        switch ($name) {
             case "name":
                 return $this->name;
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: InvoiceType::$propertyName");
+                trigger_error("Undefined property: InvoiceType::$name", E_USER_WARNING);
                 return null;
         }
     }
 
+    public static function __callStatic($name, $args)
+    {
+        $instance = self::$instances[$name] ?? null;
+        if ($instance === null) {
+            if (!array_key_exists($name, self::$cases)) {
+                throw new \ValueError("unknown case 'InvoiceType::$name'");
+            }
+            self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
+        }
+        return $instance;
+    }
+
     public static function tryFrom(string $value): ?self
     {
-        $cases = self::cases();
-        return $cases[$value] ?? null;
+        $case = array_search($value, self::$cases, true);
+        return $case ? self::$case() : null;
     }
 
     public static function from(string $value): self
@@ -66,16 +84,6 @@ final class InvoiceType implements \JsonSerializable
             ));
         }
         return $case;
-    }
-
-    public static function STATISTICS(): self
-    {
-        return self::from('Statistics');
-    }
-
-    public static function MANUAL(): self
-    {
-        return self::from('Manual');
     }
 
     public function jsonSerialize(): string

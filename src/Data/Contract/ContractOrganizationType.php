@@ -14,12 +14,25 @@ namespace BeelineOrd\Data\Contract;
  *
  * ---
  *
+ * Readonly properties:
  * @property-read string $name
  * @property-read string $value
+ *
+ * Cases:
+ * @method static ContractOrganizationType PHYSICAL_PERSON
+ * @method static ContractOrganizationType LEGAL_PERSON
+ * @method static ContractOrganizationType INDIVIDUAL_ENTREPRENEUR
  */
 final class ContractOrganizationType implements \JsonSerializable
 {
-    private static ?array $map;
+    private static array $instances = [];
+
+    private static array $cases = [
+        'PHYSICAL_PERSON' => 'PhysicalPerson',
+        'LEGAL_PERSON' => 'LegalPerson',
+        'INDIVIDUAL_ENTREPRENEUR' => 'IndividualEntrepreneur',
+    ];
+
     private string $name;
     private string $value;
 
@@ -34,30 +47,38 @@ final class ContractOrganizationType implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return self::$map = self::$map ?? [
-            new self('PHYSICAL_PERSON', 'PhysicalPerson'),
-            new self('LEGAL_PERSON', 'LegalPerson'),
-            new self('INDIVIDUAL_ENTREPRENEUR', 'IndividualEntrepreneur'),
-        ];
+        return [self::PHYSICAL_PERSON(), self::LEGAL_PERSON(), self::INDIVIDUAL_ENTREPRENEUR()];
     }
 
-    public function __get($propertyName)
+    public function __get($name)
     {
-        switch ($propertyName) {
+        switch ($name) {
             case "name":
                 return $this->name;
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: ContractOrganizationType::$propertyName");
+                trigger_error("Undefined property: ContractOrganizationType::$name", E_USER_WARNING);
                 return null;
         }
     }
 
+    public static function __callStatic($name, $args)
+    {
+        $instance = self::$instances[$name] ?? null;
+        if ($instance === null) {
+            if (!array_key_exists($name, self::$cases)) {
+                throw new \ValueError("unknown case 'ContractOrganizationType::$name'");
+            }
+            self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
+        }
+        return $instance;
+    }
+
     public static function tryFrom(string $value): ?self
     {
-        $cases = self::cases();
-        return $cases[$value] ?? null;
+        $case = array_search($value, self::$cases, true);
+        return $case ? self::$case() : null;
     }
 
     public static function from(string $value): self
@@ -70,21 +91,6 @@ final class ContractOrganizationType implements \JsonSerializable
             ));
         }
         return $case;
-    }
-
-    public static function PHYSICAL_PERSON(): self
-    {
-        return self::from('PhysicalPerson');
-    }
-
-    public static function LEGAL_PERSON(): self
-    {
-        return self::from('LegalPerson');
-    }
-
-    public static function INDIVIDUAL_ENTREPRENEUR(): self
-    {
-        return self::from('IndividualEntrepreneur');
     }
 
     public function jsonSerialize(): string

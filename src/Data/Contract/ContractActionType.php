@@ -14,12 +14,29 @@ namespace BeelineOrd\Data\Contract;
  *
  * ---
  *
+ * Readonly properties:
  * @property-read string $name
  * @property-read string $value
+ *
+ * Cases:
+ * @method static ContractActionType OTHER
+ * @method static ContractActionType DISTRIBUTION
+ * @method static ContractActionType CONCLUDE
+ * @method static ContractActionType COMMERCIAL
+ * @method static ContractActionType NONE
  */
 final class ContractActionType implements \JsonSerializable
 {
-    private static ?array $map;
+    private static array $instances = [];
+
+    private static array $cases = [
+        'OTHER' => 'Other',
+        'DISTRIBUTION' => 'Distribution',
+        'CONCLUDE' => 'Conclude',
+        'COMMERCIAL' => 'Commercial',
+        'NONE' => 'None',
+    ];
+
     private string $name;
     private string $value;
 
@@ -34,32 +51,38 @@ final class ContractActionType implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return self::$map = self::$map ?? [
-            new self('OTHER', 'Other'),
-            new self('DISTRIBUTION', 'Distribution'),
-            new self('CONCLUDE', 'Conclude'),
-            new self('COMMERCIAL', 'Commercial'),
-            new self('NONE', 'None'),
-        ];
+        return [self::OTHER(), self::DISTRIBUTION(), self::CONCLUDE(), self::COMMERCIAL(), self::NONE()];
     }
 
-    public function __get($propertyName)
+    public function __get($name)
     {
-        switch ($propertyName) {
+        switch ($name) {
             case "name":
                 return $this->name;
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: ContractActionType::$propertyName");
+                trigger_error("Undefined property: ContractActionType::$name", E_USER_WARNING);
                 return null;
         }
     }
 
+    public static function __callStatic($name, $args)
+    {
+        $instance = self::$instances[$name] ?? null;
+        if ($instance === null) {
+            if (!array_key_exists($name, self::$cases)) {
+                throw new \ValueError("unknown case 'ContractActionType::$name'");
+            }
+            self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
+        }
+        return $instance;
+    }
+
     public static function tryFrom(string $value): ?self
     {
-        $cases = self::cases();
-        return $cases[$value] ?? null;
+        $case = array_search($value, self::$cases, true);
+        return $case ? self::$case() : null;
     }
 
     public static function from(string $value): self
@@ -72,31 +95,6 @@ final class ContractActionType implements \JsonSerializable
             ));
         }
         return $case;
-    }
-
-    public static function OTHER(): self
-    {
-        return self::from('Other');
-    }
-
-    public static function DISTRIBUTION(): self
-    {
-        return self::from('Distribution');
-    }
-
-    public static function CONCLUDE(): self
-    {
-        return self::from('Conclude');
-    }
-
-    public static function COMMERCIAL(): self
-    {
-        return self::from('Commercial');
-    }
-
-    public static function NONE(): self
-    {
-        return self::from('None');
     }
 
     public function jsonSerialize(): string

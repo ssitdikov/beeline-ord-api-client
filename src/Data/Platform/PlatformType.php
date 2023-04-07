@@ -14,12 +14,25 @@ namespace BeelineOrd\Data\Platform;
  *
  * ---
  *
+ * Readonly properties:
  * @property-read string $name
  * @property-read string $value
+ *
+ * Cases:
+ * @method static PlatformType SITE
+ * @method static PlatformType APPLICATION
+ * @method static PlatformType INFORMATION_SYSTEM
  */
 final class PlatformType implements \JsonSerializable
 {
-    private static ?array $map;
+    private static array $instances = [];
+
+    private static array $cases = [
+        'SITE' => 'Site',
+        'APPLICATION' => 'Application',
+        'INFORMATION_SYSTEM' => 'InformationSystem',
+    ];
+
     private string $name;
     private string $value;
 
@@ -34,30 +47,38 @@ final class PlatformType implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return self::$map = self::$map ?? [
-            new self('SITE', 'Site'),
-            new self('APPLICATION', 'Application'),
-            new self('INFORMATION_SYSTEM', 'InformationSystem'),
-        ];
+        return [self::SITE(), self::APPLICATION(), self::INFORMATION_SYSTEM()];
     }
 
-    public function __get($propertyName)
+    public function __get($name)
     {
-        switch ($propertyName) {
+        switch ($name) {
             case "name":
                 return $this->name;
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: PlatformType::$propertyName");
+                trigger_error("Undefined property: PlatformType::$name", E_USER_WARNING);
                 return null;
         }
     }
 
+    public static function __callStatic($name, $args)
+    {
+        $instance = self::$instances[$name] ?? null;
+        if ($instance === null) {
+            if (!array_key_exists($name, self::$cases)) {
+                throw new \ValueError("unknown case 'PlatformType::$name'");
+            }
+            self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
+        }
+        return $instance;
+    }
+
     public static function tryFrom(string $value): ?self
     {
-        $cases = self::cases();
-        return $cases[$value] ?? null;
+        $case = array_search($value, self::$cases, true);
+        return $case ? self::$case() : null;
     }
 
     public static function from(string $value): self
@@ -70,21 +91,6 @@ final class PlatformType implements \JsonSerializable
             ));
         }
         return $case;
-    }
-
-    public static function SITE(): self
-    {
-        return self::from('Site');
-    }
-
-    public static function APPLICATION(): self
-    {
-        return self::from('Application');
-    }
-
-    public static function INFORMATION_SYSTEM(): self
-    {
-        return self::from('InformationSystem');
     }
 
     public function jsonSerialize(): string

@@ -14,12 +14,25 @@ namespace BeelineOrd\Data\Creative;
  *
  * ---
  *
+ * Readonly properties:
  * @property-read string $name
  * @property-read string $value
+ *
+ * Cases:
+ * @method static CreativeType OTHER
+ * @method static CreativeType PAY_FOR_VIEWS
+ * @method static CreativeType PAY_FOR_CLICKS
  */
 final class CreativeType implements \JsonSerializable
 {
-    private static ?array $map;
+    private static array $instances = [];
+
+    private static array $cases = [
+        'OTHER' => 'Other',
+        'PAY_FOR_VIEWS' => 'PayForViews',
+        'PAY_FOR_CLICKS' => 'PayForClicks',
+    ];
+
     private string $name;
     private string $value;
 
@@ -34,30 +47,38 @@ final class CreativeType implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return self::$map = self::$map ?? [
-            new self('OTHER', 'Other'),
-            new self('PAY_FOR_VIEWS', 'PayForViews'),
-            new self('PAY_FOR_CLICKS', 'PayForClicks'),
-        ];
+        return [self::OTHER(), self::PAY_FOR_VIEWS(), self::PAY_FOR_CLICKS()];
     }
 
-    public function __get($propertyName)
+    public function __get($name)
     {
-        switch ($propertyName) {
+        switch ($name) {
             case "name":
                 return $this->name;
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: CreativeType::$propertyName");
+                trigger_error("Undefined property: CreativeType::$name", E_USER_WARNING);
                 return null;
         }
     }
 
+    public static function __callStatic($name, $args)
+    {
+        $instance = self::$instances[$name] ?? null;
+        if ($instance === null) {
+            if (!array_key_exists($name, self::$cases)) {
+                throw new \ValueError("unknown case 'CreativeType::$name'");
+            }
+            self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
+        }
+        return $instance;
+    }
+
     public static function tryFrom(string $value): ?self
     {
-        $cases = self::cases();
-        return $cases[$value] ?? null;
+        $case = array_search($value, self::$cases, true);
+        return $case ? self::$case() : null;
     }
 
     public static function from(string $value): self
@@ -70,21 +91,6 @@ final class CreativeType implements \JsonSerializable
             ));
         }
         return $case;
-    }
-
-    public static function OTHER(): self
-    {
-        return self::from('Other');
-    }
-
-    public static function PAY_FOR_VIEWS(): self
-    {
-        return self::from('PayForViews');
-    }
-
-    public static function PAY_FOR_CLICKS(): self
-    {
-        return self::from('PayForClicks');
     }
 
     public function jsonSerialize(): string

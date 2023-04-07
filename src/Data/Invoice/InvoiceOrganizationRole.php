@@ -14,12 +14,27 @@ namespace BeelineOrd\Data\Invoice;
  *
  * ---
  *
+ * Readonly properties:
  * @property-read string $name
  * @property-read string $value
+ *
+ * Cases:
+ * @method static InvoiceOrganizationRole ADVERTISING_AGENCY
+ * @method static InvoiceOrganizationRole ADVERTISING_DISTRIBUTOR
+ * @method static InvoiceOrganizationRole ADVERTISING_SYSTEM_OPERATOR
+ * @method static InvoiceOrganizationRole ADVERTISER
  */
 final class InvoiceOrganizationRole implements \JsonSerializable
 {
-    private static ?array $map;
+    private static array $instances = [];
+
+    private static array $cases = [
+        'ADVERTISING_AGENCY' => 'AdvertisingAgency',
+        'ADVERTISING_DISTRIBUTOR' => 'AdvertisingDistributor',
+        'ADVERTISING_SYSTEM_OPERATOR' => 'AdvertisingSystemOperator',
+        'ADVERTISER' => 'Advertiser',
+    ];
+
     private string $name;
     private string $value;
 
@@ -34,31 +49,43 @@ final class InvoiceOrganizationRole implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return self::$map = self::$map ?? [
-            new self('ADVERTISING_AGENCY', 'AdvertisingAgency'),
-            new self('ADVERTISING_DISTRIBUTOR', 'AdvertisingDistributor'),
-            new self('ADVERTISING_SYSTEM_OPERATOR', 'AdvertisingSystemOperator'),
-            new self('ADVERTISER', 'Advertiser'),
+        return [
+            self::ADVERTISING_AGENCY(),
+            self::ADVERTISING_DISTRIBUTOR(),
+            self::ADVERTISING_SYSTEM_OPERATOR(),
+            self::ADVERTISER(),
         ];
     }
 
-    public function __get($propertyName)
+    public function __get($name)
     {
-        switch ($propertyName) {
+        switch ($name) {
             case "name":
                 return $this->name;
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: InvoiceOrganizationRole::$propertyName");
+                trigger_error("Undefined property: InvoiceOrganizationRole::$name", E_USER_WARNING);
                 return null;
         }
     }
 
+    public static function __callStatic($name, $args)
+    {
+        $instance = self::$instances[$name] ?? null;
+        if ($instance === null) {
+            if (!array_key_exists($name, self::$cases)) {
+                throw new \ValueError("unknown case 'InvoiceOrganizationRole::$name'");
+            }
+            self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
+        }
+        return $instance;
+    }
+
     public static function tryFrom(string $value): ?self
     {
-        $cases = self::cases();
-        return $cases[$value] ?? null;
+        $case = array_search($value, self::$cases, true);
+        return $case ? self::$case() : null;
     }
 
     public static function from(string $value): self
@@ -71,26 +98,6 @@ final class InvoiceOrganizationRole implements \JsonSerializable
             ));
         }
         return $case;
-    }
-
-    public static function ADVERTISING_AGENCY(): self
-    {
-        return self::from('AdvertisingAgency');
-    }
-
-    public static function ADVERTISING_DISTRIBUTOR(): self
-    {
-        return self::from('AdvertisingDistributor');
-    }
-
-    public static function ADVERTISING_SYSTEM_OPERATOR(): self
-    {
-        return self::from('AdvertisingSystemOperator');
-    }
-
-    public static function ADVERTISER(): self
-    {
-        return self::from('Advertiser');
     }
 
     public function jsonSerialize(): string
