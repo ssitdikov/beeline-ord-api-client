@@ -11,14 +11,19 @@ namespace BeelineOrd\Data\Contract;
  *
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
+ *
+ * ---
+ *
+ * @property-read string $name
+ * @property-read string $value
  */
 final class ContractActionType implements \JsonSerializable
 {
-    public static ?array $map;
-    public string $name;
-    public $value;
+    private static ?array $map;
+    private string $name;
+    private string $value;
 
-    private function __construct(string $name, $value)
+    private function __construct(string $name, string $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -30,31 +35,34 @@ final class ContractActionType implements \JsonSerializable
     public static function cases(): array
     {
         return self::$map = self::$map ?? [
-            'Other' => new self('OTHER', 'Other'),
-            'Distribution' => new self('DISTRIBUTION', 'Distribution'),
-            'Conclude' => new self('CONCLUDE', 'Conclude'),
-            'Commercial' => new self('COMMERCIAL', 'Commercial'),
-            'None' => new self('NONE', 'None'),
+            new self('OTHER', 'Other'),
+            new self('DISTRIBUTION', 'Distribution'),
+            new self('CONCLUDE', 'Conclude'),
+            new self('COMMERCIAL', 'Commercial'),
+            new self('NONE', 'None'),
         ];
     }
 
-    public function name(): string
+    public function __get($propertyName)
     {
-        return $this->name;
+        switch ($propertyName) {
+            case "name":
+                return $this->name;
+            case "value":
+                return $this->value;
+            default:
+                trigger_error("Undefined property: ContractActionType::$propertyName");
+                return null;
+        }
     }
 
-    public function value()
-    {
-        return $this->value;
-    }
-
-    public static function tryFrom($value): ?self
+    public static function tryFrom(string $value): ?self
     {
         $cases = self::cases();
         return $cases[$value] ?? null;
     }
 
-    public static function from($value): self
+    public static function from(string $value): self
     {
         $case = self::tryFrom($value);
         if (!$case) {
@@ -91,7 +99,7 @@ final class ContractActionType implements \JsonSerializable
         return self::from('None');
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string
     {
         return $this->value;
     }

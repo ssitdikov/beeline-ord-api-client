@@ -11,14 +11,19 @@ namespace BeelineOrd\Data\Contract;
  *
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
+ *
+ * ---
+ *
+ * @property-read string $name
+ * @property-read string $value
  */
 final class ContractType implements \JsonSerializable
 {
-    public static ?array $map;
-    public string $name;
-    public $value;
+    private static ?array $map;
+    private string $name;
+    private string $value;
 
-    private function __construct(string $name, $value)
+    private function __construct(string $name, string $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -30,30 +35,33 @@ final class ContractType implements \JsonSerializable
     public static function cases(): array
     {
         return self::$map = self::$map ?? [
-            'Intermediary' => new self('INTERMEDIARY', 'Intermediary'),
-            'Original' => new self('ORIGINAL', 'Original'),
-            'Additional' => new self('ADDITIONAL', 'Additional'),
-            'SelfPromotion' => new self('SELF_PROMOTION', 'SelfPromotion'),
+            new self('INTERMEDIARY', 'Intermediary'),
+            new self('ORIGINAL', 'Original'),
+            new self('ADDITIONAL', 'Additional'),
+            new self('SELF_PROMOTION', 'SelfPromotion'),
         ];
     }
 
-    public function name(): string
+    public function __get($propertyName)
     {
-        return $this->name;
+        switch ($propertyName) {
+            case "name":
+                return $this->name;
+            case "value":
+                return $this->value;
+            default:
+                trigger_error("Undefined property: ContractType::$propertyName");
+                return null;
+        }
     }
 
-    public function value()
-    {
-        return $this->value;
-    }
-
-    public static function tryFrom($value): ?self
+    public static function tryFrom(string $value): ?self
     {
         $cases = self::cases();
         return $cases[$value] ?? null;
     }
 
-    public static function from($value): self
+    public static function from(string $value): self
     {
         $case = self::tryFrom($value);
         if (!$case) {
@@ -85,7 +93,7 @@ final class ContractType implements \JsonSerializable
         return self::from('SelfPromotion');
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string
     {
         return $this->value;
     }

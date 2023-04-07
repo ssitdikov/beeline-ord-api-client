@@ -11,14 +11,19 @@ namespace BeelineOrd\Data\Creative;
  *
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
+ *
+ * ---
+ *
+ * @property-read string $name
+ * @property-read string $value
  */
 final class CreativeType implements \JsonSerializable
 {
-    public static ?array $map;
-    public string $name;
-    public $value;
+    private static ?array $map;
+    private string $name;
+    private string $value;
 
-    private function __construct(string $name, $value)
+    private function __construct(string $name, string $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -30,29 +35,32 @@ final class CreativeType implements \JsonSerializable
     public static function cases(): array
     {
         return self::$map = self::$map ?? [
-            'Other' => new self('OTHER', 'Other'),
-            'PayForViews' => new self('PAY_FOR_VIEWS', 'PayForViews'),
-            'PayForClicks' => new self('PAY_FOR_CLICKS', 'PayForClicks'),
+            new self('OTHER', 'Other'),
+            new self('PAY_FOR_VIEWS', 'PayForViews'),
+            new self('PAY_FOR_CLICKS', 'PayForClicks'),
         ];
     }
 
-    public function name(): string
+    public function __get($propertyName)
     {
-        return $this->name;
+        switch ($propertyName) {
+            case "name":
+                return $this->name;
+            case "value":
+                return $this->value;
+            default:
+                trigger_error("Undefined property: CreativeType::$propertyName");
+                return null;
+        }
     }
 
-    public function value()
-    {
-        return $this->value;
-    }
-
-    public static function tryFrom($value): ?self
+    public static function tryFrom(string $value): ?self
     {
         $cases = self::cases();
         return $cases[$value] ?? null;
     }
 
-    public static function from($value): self
+    public static function from(string $value): self
     {
         $case = self::tryFrom($value);
         if (!$case) {
@@ -79,7 +87,7 @@ final class CreativeType implements \JsonSerializable
         return self::from('PayForClicks');
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string
     {
         return $this->value;
     }
