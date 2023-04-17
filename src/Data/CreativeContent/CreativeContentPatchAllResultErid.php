@@ -12,49 +12,25 @@ namespace BeelineOrd\Data\CreativeContent;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class CreativeContentUploadResult implements \JsonSerializable
+class CreativeContentPatchAllResultErid implements \JsonSerializable
 {
+    protected ?int $creativeId;
     protected ?string $erid;
-    protected ?int $filesCount;
-    protected ?int $uploadedFilesCount;
 
-    /** @var ?array<CreativeContentUploadResultFileError> $fileErrors */
-    protected ?array $fileErrors;
-
-    public function __construct(
-        ?string $erid = null,
-        ?int $filesCount = null,
-        ?int $uploadedFilesCount = null,
-        ?array $fileErrors = []
-    ) {
+    public function __construct(?int $creativeId = null, ?string $erid = null)
+    {
+        $this->creativeId = $creativeId;
         $this->erid = $erid;
-        $this->filesCount = $filesCount;
-        $this->uploadedFilesCount = $uploadedFilesCount;
-        $fileErrors && (function(CreativeContentUploadResultFileError ...$_) {})( ...$fileErrors);
-        $this->fileErrors = $fileErrors;
+    }
+
+    public function getCreativeId(): ?int
+    {
+        return $this->creativeId;
     }
 
     public function getErid(): ?string
     {
         return $this->erid;
-    }
-
-    public function getFilesCount(): ?int
-    {
-        return $this->filesCount;
-    }
-
-    public function getUploadedFilesCount(): ?int
-    {
-        return $this->uploadedFilesCount;
-    }
-
-    /**
-     * @return ?array<CreativeContentUploadResultFileError>
-     */
-    public function getFileErrors(): ?array
-    {
-        return $this->fileErrors;
     }
 
     /**
@@ -63,20 +39,12 @@ class CreativeContentUploadResult implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
-            case "erid":
-                yield \Closure::fromCallable('strval');
-                break;
-
-            case "filesCount":
-            case "uploadedFilesCount":
+            case "creativeId":
                 yield \Closure::fromCallable('intval');
                 break;
 
-            case "fileErrors":
-                yield fn ($array) => array_map(
-                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentUploadResultFileError', 'create' ], $data),
-                    (array)$array
-                );
+            case "erid":
+                yield \Closure::fromCallable('strval');
                 break;
         };
     }
@@ -100,10 +68,8 @@ class CreativeContentUploadResult implements \JsonSerializable
         // create
         /** @psalm-suppress PossiblyNullArgument */
         return new static(
-            $constructorParams["erid"] ?? null,
-            $constructorParams["filesCount"] ?? null,
-            $constructorParams["uploadedFilesCount"] ?? null,
-            $constructorParams["fileErrors"] ?? null
+            $constructorParams["creativeId"] ?? null,
+            $constructorParams["erid"] ?? null
         );
     }
 

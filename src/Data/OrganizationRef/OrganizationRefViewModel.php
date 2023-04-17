@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace BeelineOrd\Data\CreativeContent;
+namespace BeelineOrd\Data\OrganizationRef;
 
 /**
  * This class is auto-generated with klkvsk/dto-generator
@@ -12,49 +12,43 @@ namespace BeelineOrd\Data\CreativeContent;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class CreativeContentUploadResult implements \JsonSerializable
+class OrganizationRefViewModel extends OrganizationRefCreateModel implements \JsonSerializable
 {
-    protected ?string $erid;
-    protected ?int $filesCount;
-    protected ?int $uploadedFilesCount;
-
-    /** @var ?array<CreativeContentUploadResultFileError> $fileErrors */
-    protected ?array $fileErrors;
+    protected int $id;
 
     public function __construct(
-        ?string $erid = null,
-        ?int $filesCount = null,
-        ?int $uploadedFilesCount = null,
-        ?array $fileErrors = []
+        string $name,
+        string $okmsNumber,
+        OrganizationRefType $type,
+        int $id,
+        ?string $mobilePhone = null,
+        ?string $epayNumber = null,
+        ?string $regNumber = null,
+        ?string $alternativeInn = null
     ) {
-        $this->erid = $erid;
-        $this->filesCount = $filesCount;
-        $this->uploadedFilesCount = $uploadedFilesCount;
-        $fileErrors && (function(CreativeContentUploadResultFileError ...$_) {})( ...$fileErrors);
-        $this->fileErrors = $fileErrors;
+        parent::__construct($name, $okmsNumber, $type, $mobilePhone, $epayNumber, $regNumber, $alternativeInn);
+        $this->id = $id;
     }
 
-    public function getErid(): ?string
+    public function getId(): int
     {
-        return $this->erid;
+        return $this->id;
     }
 
-    public function getFilesCount(): ?int
+    protected static function defaults(): array
     {
-        return $this->filesCount;
+        return array_merge(
+            method_exists(parent::class, "defaults") ? parent::defaults() : [],
+            []
+        );
     }
 
-    public function getUploadedFilesCount(): ?int
+    protected static function required(): array
     {
-        return $this->uploadedFilesCount;
-    }
-
-    /**
-     * @return ?array<CreativeContentUploadResultFileError>
-     */
-    public function getFileErrors(): ?array
-    {
-        return $this->fileErrors;
+        return array_merge(
+            method_exists(parent::class, "required") ? parent::required() : [],
+            ['id']
+        );
     }
 
     /**
@@ -63,21 +57,14 @@ class CreativeContentUploadResult implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
-            case "erid":
-                yield \Closure::fromCallable('strval');
-                break;
-
-            case "filesCount":
-            case "uploadedFilesCount":
+            case "id":
                 yield \Closure::fromCallable('intval');
                 break;
 
-            case "fileErrors":
-                yield fn ($array) => array_map(
-                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentUploadResultFileError', 'create' ], $data),
-                    (array)$array
-                );
-                break;
+            default:
+                if (method_exists(parent::class, "importers")) {
+                    yield from parent::importers($key);
+                };
         };
     }
 
@@ -86,6 +73,14 @@ class CreativeContentUploadResult implements \JsonSerializable
      */
     public static function create(array $data): self
     {
+        // defaults
+        $data += static::defaults();
+
+        // check required
+        if ($diff = array_diff(static::required(), array_keys($data))) {
+            throw new \InvalidArgumentException("missing keys: " . implode(", ", $diff));
+        }
+
         // import
         $constructorParams = [];
         foreach ($data as $key => $value) {
@@ -100,10 +95,14 @@ class CreativeContentUploadResult implements \JsonSerializable
         // create
         /** @psalm-suppress PossiblyNullArgument */
         return new static(
-            $constructorParams["erid"] ?? null,
-            $constructorParams["filesCount"] ?? null,
-            $constructorParams["uploadedFilesCount"] ?? null,
-            $constructorParams["fileErrors"] ?? null
+            $constructorParams["name"],
+            $constructorParams["okmsNumber"],
+            $constructorParams["type"],
+            $constructorParams["id"],
+            $constructorParams["mobilePhone"] ?? null,
+            $constructorParams["epayNumber"] ?? null,
+            $constructorParams["regNumber"] ?? null,
+            $constructorParams["alternativeInn"] ?? null
         );
     }
 

@@ -16,7 +16,7 @@ class CreativePatchAllRequest extends AbstractRequest
 {
     public function getMethod(): string
     {
-        return 'PATCH /data/creative/all';
+        return 'PATCH /data/creative/v2/all';
     }
 
     /**

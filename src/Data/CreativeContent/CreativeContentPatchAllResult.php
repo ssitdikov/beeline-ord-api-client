@@ -12,49 +12,36 @@ namespace BeelineOrd\Data\CreativeContent;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class CreativeContentUploadResult implements \JsonSerializable
+class CreativeContentPatchAllResult implements \JsonSerializable
 {
-    protected ?string $erid;
-    protected ?int $filesCount;
-    protected ?int $uploadedFilesCount;
+    /** @var ?array<CreativeContentPatchAllResultErid> $erids */
+    protected ?array $erids;
 
-    /** @var ?array<CreativeContentUploadResultFileError> $fileErrors */
-    protected ?array $fileErrors;
+    /** @var ?array<int> $ids */
+    protected ?array $ids;
 
-    public function __construct(
-        ?string $erid = null,
-        ?int $filesCount = null,
-        ?int $uploadedFilesCount = null,
-        ?array $fileErrors = []
-    ) {
-        $this->erid = $erid;
-        $this->filesCount = $filesCount;
-        $this->uploadedFilesCount = $uploadedFilesCount;
-        $fileErrors && (function(CreativeContentUploadResultFileError ...$_) {})( ...$fileErrors);
-        $this->fileErrors = $fileErrors;
-    }
-
-    public function getErid(): ?string
+    public function __construct(?array $erids = [], ?array $ids = [])
     {
-        return $this->erid;
-    }
-
-    public function getFilesCount(): ?int
-    {
-        return $this->filesCount;
-    }
-
-    public function getUploadedFilesCount(): ?int
-    {
-        return $this->uploadedFilesCount;
+        $erids && (function(CreativeContentPatchAllResultErid ...$_) {})( ...$erids);
+        $this->erids = $erids;
+        $ids && (function(int ...$_) {})( ...$ids);
+        $this->ids = $ids;
     }
 
     /**
-     * @return ?array<CreativeContentUploadResultFileError>
+     * @return ?array<CreativeContentPatchAllResultErid>
      */
-    public function getFileErrors(): ?array
+    public function getErids(): ?array
     {
-        return $this->fileErrors;
+        return $this->erids;
+    }
+
+    /**
+     * @return ?array<int>
+     */
+    public function getIds(): ?array
+    {
+        return $this->ids;
     }
 
     /**
@@ -63,18 +50,16 @@ class CreativeContentUploadResult implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
-            case "erid":
-                yield \Closure::fromCallable('strval');
-                break;
-
-            case "filesCount":
-            case "uploadedFilesCount":
-                yield \Closure::fromCallable('intval');
-                break;
-
-            case "fileErrors":
+            case "erids":
                 yield fn ($array) => array_map(
-                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentUploadResultFileError', 'create' ], $data),
+                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentPatchAllResultErid', 'create' ], $data),
+                    (array)$array
+                );
+                break;
+
+            case "ids":
+                yield fn ($array) => array_map(
+                    \Closure::fromCallable('intval'),
                     (array)$array
                 );
                 break;
@@ -100,10 +85,8 @@ class CreativeContentUploadResult implements \JsonSerializable
         // create
         /** @psalm-suppress PossiblyNullArgument */
         return new static(
-            $constructorParams["erid"] ?? null,
-            $constructorParams["filesCount"] ?? null,
-            $constructorParams["uploadedFilesCount"] ?? null,
-            $constructorParams["fileErrors"] ?? null
+            $constructorParams["erids"] ?? null,
+            $constructorParams["ids"] ?? null
         );
     }
 

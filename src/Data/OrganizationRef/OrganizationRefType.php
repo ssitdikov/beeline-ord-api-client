@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace BeelineOrd\Data\Contract;
+namespace BeelineOrd\Data\OrganizationRef;
 
 /**
  * This class is auto-generated with klkvsk/dto-generator
@@ -19,20 +19,14 @@ namespace BeelineOrd\Data\Contract;
  * @property-read string $value
  *
  * Cases:
- * @method static ContractOrganizationType PHYSICAL_PERSON
- * @method static ContractOrganizationType LEGAL_PERSON
- * @method static ContractOrganizationType INDIVIDUAL_ENTREPRENEUR
- * @method static ContractOrganizationType FOREIGN_PHYSICAL_PERSON
- * @method static ContractOrganizationType FOREIGN_LEGAL_PERSON
+ * @method static OrganizationRefType FOREIGN_PHYSICAL_PERSON
+ * @method static OrganizationRefType FOREIGN_LEGAL_PERSON
  */
-final class ContractOrganizationType implements \JsonSerializable
+final class OrganizationRefType implements \JsonSerializable
 {
     private static array $instances = [];
 
     private static array $cases = [
-        'PHYSICAL_PERSON' => 'PhysicalPerson',
-        'LEGAL_PERSON' => 'LegalPerson',
-        'INDIVIDUAL_ENTREPRENEUR' => 'IndividualEntrepreneur',
         'FOREIGN_PHYSICAL_PERSON' => 'ForeignPhysicalPerson',
         'FOREIGN_LEGAL_PERSON' => 'ForeignLegalPerson',
     ];
@@ -51,13 +45,7 @@ final class ContractOrganizationType implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return [
-            self::PHYSICAL_PERSON(),
-            self::LEGAL_PERSON(),
-            self::INDIVIDUAL_ENTREPRENEUR(),
-            self::FOREIGN_PHYSICAL_PERSON(),
-            self::FOREIGN_LEGAL_PERSON(),
-        ];
+        return [self::FOREIGN_PHYSICAL_PERSON(), self::FOREIGN_LEGAL_PERSON()];
     }
 
     public function __get($name)
@@ -68,7 +56,7 @@ final class ContractOrganizationType implements \JsonSerializable
             case "value":
                 return $this->value;
             default:
-                trigger_error("Undefined property: ContractOrganizationType::$name", E_USER_WARNING);
+                trigger_error("Undefined property: OrganizationRefType::$name", E_USER_WARNING);
                 return null;
         }
     }
@@ -78,7 +66,7 @@ final class ContractOrganizationType implements \JsonSerializable
         $instance = self::$instances[$name] ?? null;
         if ($instance === null) {
             if (!array_key_exists($name, self::$cases)) {
-                throw new \ValueError("unknown case 'ContractOrganizationType::$name'");
+                throw new \ValueError("unknown case 'OrganizationRefType::$name'");
             }
             self::$instances[$name] = $instance = new self($name, self::$cases[$name]);
         }

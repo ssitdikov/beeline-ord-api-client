@@ -67,7 +67,9 @@ return dto\schema(
         ),
         dto\enum(
             name: 'Contract\\ContractOrganizationType',
-            cases: ['PhysicalPerson', 'LegalPerson', 'IndividualEntrepreneur']
+            cases: [
+                'PhysicalPerson', 'LegalPerson', 'IndividualEntrepreneur', 'ForeignPhysicalPerson', 'ForeignLegalPerson'
+            ]
         ),
         dto\object(
             name: 'Contract\\InitialContract',
@@ -140,7 +142,7 @@ return dto\schema(
             name: 'Creative\\CreativeCreateResult',
             fields: [
                 dto\field('id', t\int(), true),
-                dto\field('erid', t\string(), true),
+                dto\field('erid', t\string(), deprecated: 'removed in API v43'),
             ]
         ),
         dto\object(
@@ -244,9 +246,24 @@ return dto\schema(
         dto\object(
             name: 'CreativeContent\\CreativeContentUploadResult',
             fields: [
+                dto\field('erid', t\string()),
                 dto\field('filesCount', t\int()),
                 dto\field('uploadedFilesCount', t\int()),
                 dto\field('fileErrors', t\list_(t\object('CreativeContent\\CreativeContentUploadResultFileError'))),
+            ]
+        ),
+        dto\object(
+            name: 'CreativeContent\\CreativeContentPatchAllResultErid',
+            fields: [
+                dto\field('creativeId', t\int()),
+                dto\field('erid', t\string()),
+            ]
+        ),
+        dto\object(
+            name: 'CreativeContent\\CreativeContentPatchAllResult',
+            fields: [
+                dto\field('erids', t\list_(t\object('CreativeContent\\CreativeContentPatchAllResultErid'))),
+                dto\field('ids', t\list_(t\int())),
             ]
         ),
         // ---
@@ -346,5 +363,32 @@ return dto\schema(
             name: 'InvoiceItemStatistics\\InvoiceItemStatisticsViewModel',
             extends: 'InvoiceItemStatistics\\InvoiceItemStatisticsCreateModel',
         ),
+
+
+        // FOREIGN ORGANIZATIONS
+        dto\enum(
+            name: 'OrganizationRef\\OrganizationRefType',
+            cases: [ 'ForeignPhysicalPerson', 'ForeignLegalPerson' ]
+        ),
+        dto\object(
+            name: 'OrganizationRef\\OrganizationRefCreateModel',
+            fields: [
+                dto\field('name', t\string(), required: true),
+                dto\field('okmsNumber', t\string(), required: true),
+                dto\field('type', t\enum('OrganizationRef\\OrganizationRefType'), required: true),
+                dto\field('mobilePhone', t\string()),
+                dto\field('epayNumber', t\string()),
+                dto\field('regNumber', t\string()),
+                dto\field('alternativeInn', t\string()),
+            ]
+        ),
+        dto\object(
+            name: 'OrganizationRef\\OrganizationRefViewModel',
+            extends: 'OrganizationRef\\OrganizationRefCreateModel',
+            fields: [
+                dto\field('id', t\int(), required: true),
+            ]
+        ),
+        // ---
     ]
 );

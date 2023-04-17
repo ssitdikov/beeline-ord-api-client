@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace BeelineOrd\Data\CreativeContent;
+namespace BeelineOrd\Data\OrganizationRef;
 
 /**
  * This class is auto-generated with klkvsk/dto-generator
@@ -12,49 +12,72 @@ namespace BeelineOrd\Data\CreativeContent;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class CreativeContentUploadResult implements \JsonSerializable
+class OrganizationRefCreateModel implements \JsonSerializable
 {
-    protected ?string $erid;
-    protected ?int $filesCount;
-    protected ?int $uploadedFilesCount;
-
-    /** @var ?array<CreativeContentUploadResultFileError> $fileErrors */
-    protected ?array $fileErrors;
+    protected string $name;
+    protected string $okmsNumber;
+    protected OrganizationRefType $type;
+    protected ?string $mobilePhone;
+    protected ?string $epayNumber;
+    protected ?string $regNumber;
+    protected ?string $alternativeInn;
 
     public function __construct(
-        ?string $erid = null,
-        ?int $filesCount = null,
-        ?int $uploadedFilesCount = null,
-        ?array $fileErrors = []
+        string $name,
+        string $okmsNumber,
+        OrganizationRefType $type,
+        ?string $mobilePhone = null,
+        ?string $epayNumber = null,
+        ?string $regNumber = null,
+        ?string $alternativeInn = null
     ) {
-        $this->erid = $erid;
-        $this->filesCount = $filesCount;
-        $this->uploadedFilesCount = $uploadedFilesCount;
-        $fileErrors && (function(CreativeContentUploadResultFileError ...$_) {})( ...$fileErrors);
-        $this->fileErrors = $fileErrors;
+        $this->name = $name;
+        $this->okmsNumber = $okmsNumber;
+        $this->type = $type;
+        $this->mobilePhone = $mobilePhone;
+        $this->epayNumber = $epayNumber;
+        $this->regNumber = $regNumber;
+        $this->alternativeInn = $alternativeInn;
     }
 
-    public function getErid(): ?string
+    public function getName(): string
     {
-        return $this->erid;
+        return $this->name;
     }
 
-    public function getFilesCount(): ?int
+    public function getOkmsNumber(): string
     {
-        return $this->filesCount;
+        return $this->okmsNumber;
     }
 
-    public function getUploadedFilesCount(): ?int
+    public function getType(): OrganizationRefType
     {
-        return $this->uploadedFilesCount;
+        return $this->type;
     }
 
-    /**
-     * @return ?array<CreativeContentUploadResultFileError>
-     */
-    public function getFileErrors(): ?array
+    public function getMobilePhone(): ?string
     {
-        return $this->fileErrors;
+        return $this->mobilePhone;
+    }
+
+    public function getEpayNumber(): ?string
+    {
+        return $this->epayNumber;
+    }
+
+    public function getRegNumber(): ?string
+    {
+        return $this->regNumber;
+    }
+
+    public function getAlternativeInn(): ?string
+    {
+        return $this->alternativeInn;
+    }
+
+    protected static function required(): array
+    {
+        return ['name', 'okmsNumber', 'type'];
     }
 
     /**
@@ -63,20 +86,17 @@ class CreativeContentUploadResult implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
-            case "erid":
+            case "name":
+            case "okmsNumber":
+            case "mobilePhone":
+            case "epayNumber":
+            case "regNumber":
+            case "alternativeInn":
                 yield \Closure::fromCallable('strval');
                 break;
 
-            case "filesCount":
-            case "uploadedFilesCount":
-                yield \Closure::fromCallable('intval');
-                break;
-
-            case "fileErrors":
-                yield fn ($array) => array_map(
-                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentUploadResultFileError', 'create' ], $data),
-                    (array)$array
-                );
+            case "type":
+                yield fn ($data) => call_user_func([ '\BeelineOrd\Data\OrganizationRef\OrganizationRefType', 'from' ], $data);
                 break;
         };
     }
@@ -86,6 +106,11 @@ class CreativeContentUploadResult implements \JsonSerializable
      */
     public static function create(array $data): self
     {
+        // check required
+        if ($diff = array_diff(static::required(), array_keys($data))) {
+            throw new \InvalidArgumentException("missing keys: " . implode(", ", $diff));
+        }
+
         // import
         $constructorParams = [];
         foreach ($data as $key => $value) {
@@ -100,10 +125,13 @@ class CreativeContentUploadResult implements \JsonSerializable
         // create
         /** @psalm-suppress PossiblyNullArgument */
         return new static(
-            $constructorParams["erid"] ?? null,
-            $constructorParams["filesCount"] ?? null,
-            $constructorParams["uploadedFilesCount"] ?? null,
-            $constructorParams["fileErrors"] ?? null
+            $constructorParams["name"],
+            $constructorParams["okmsNumber"],
+            $constructorParams["type"],
+            $constructorParams["mobilePhone"] ?? null,
+            $constructorParams["epayNumber"] ?? null,
+            $constructorParams["regNumber"] ?? null,
+            $constructorParams["alternativeInn"] ?? null
         );
     }
 

@@ -5,7 +5,7 @@ namespace BeelineOrd\Request\CreativeContent;
 use BeelineOrd\Data\Creative\CreativeCreateResult;
 use BeelineOrd\Data\CreativeContent\CreativeContentCreateModel;
 use BeelineOrd\Data\CreativeContent\CreativeContentEditModel;
-use BeelineOrd\Data\CreativeContent\CreativeContentUploadResult;
+use BeelineOrd\Data\CreativeContent\CreativeContentPatchAllResult;
 use BeelineOrd\Request\AbstractRequest;
 
 /**
@@ -15,7 +15,7 @@ class CreativeContentPatchAllRequest extends AbstractRequest
 {
     public function getMethod(): string
     {
-        return 'PATCH /data/creativeContent/all';
+        return 'PATCH /data/creativeContent/v2/all';
     }
 
     /**
@@ -35,11 +35,11 @@ class CreativeContentPatchAllRequest extends AbstractRequest
 
     /**
      * @param array $body
-     * @return CreativeCreateResult[]
+     * @return CreativeContentPatchAllResult
      */
     public function createResponse(array $body)
     {
-        return array_map(fn($item) => CreativeCreateResult::create($item), $body);
+        return CreativeContentPatchAllResult::create($body);
     }
 
 }

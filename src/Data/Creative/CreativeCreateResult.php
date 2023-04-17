@@ -15,9 +15,11 @@ namespace BeelineOrd\Data\Creative;
 class CreativeCreateResult implements \JsonSerializable
 {
     protected int $id;
-    protected string $erid;
 
-    public function __construct(int $id, string $erid)
+    /** @deprecated removed in API v43 */
+    protected ?string $erid;
+
+    public function __construct(int $id, ?string $erid = null)
     {
         $this->id = $id;
         $this->erid = $erid;
@@ -28,14 +30,17 @@ class CreativeCreateResult implements \JsonSerializable
         return $this->id;
     }
 
-    public function getErid(): string
+    /**
+     * @deprecated removed in API v43
+     */
+    public function getErid(): ?string
     {
         return $this->erid;
     }
 
     protected static function required(): array
     {
-        return ['id', 'erid'];
+        return ['id'];
     }
 
     /**
@@ -79,7 +84,7 @@ class CreativeCreateResult implements \JsonSerializable
         /** @psalm-suppress PossiblyNullArgument */
         return new static(
             $constructorParams["id"],
-            $constructorParams["erid"]
+            $constructorParams["erid"] ?? null
         );
     }
 
