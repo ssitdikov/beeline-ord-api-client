@@ -22,6 +22,7 @@ namespace BeelineOrd\Data\Creative;
  * @method static CreativeType OTHER
  * @method static CreativeType PAY_FOR_VIEWS
  * @method static CreativeType PAY_FOR_CLICKS
+ * @method static CreativeType PAY_FOR_ACTIONS
  */
 final class CreativeType implements \JsonSerializable
 {
@@ -31,6 +32,7 @@ final class CreativeType implements \JsonSerializable
         'OTHER' => 'Other',
         'PAY_FOR_VIEWS' => 'PayForViews',
         'PAY_FOR_CLICKS' => 'PayForClicks',
+        'PAY_FOR_ACTIONS' => 'PayForActions',
     ];
 
     private string $name;
@@ -47,7 +49,7 @@ final class CreativeType implements \JsonSerializable
      */
     public static function cases(): array
     {
-        return [self::OTHER(), self::PAY_FOR_VIEWS(), self::PAY_FOR_CLICKS()];
+        return [self::OTHER(), self::PAY_FOR_VIEWS(), self::PAY_FOR_CLICKS(), self::PAY_FOR_ACTIONS()];
     }
 
     public function __get($name)

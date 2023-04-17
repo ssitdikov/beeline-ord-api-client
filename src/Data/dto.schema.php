@@ -132,7 +132,7 @@ return dto\schema(
 
         // CREATIVE
         dto\enum('Creative\\CreativeType', [
-            'Other', 'PayForViews', 'PayForClicks',
+            'Other', 'PayForViews', 'PayForClicks', 'PayForActions',
         ]),
         dto\enum('Creative\\CreativeForm', [
             'Banner', 'TextBlock', 'TextGraphicBlock', 'Video', 'AudioRecord', 'LiveAudio', 'LiveVideo', 'Other',
