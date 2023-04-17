@@ -12,25 +12,36 @@ namespace BeelineOrd\Data\CreativeContent;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class CreativeContentPatchAllResultErid implements \JsonSerializable
+class CreativeContentImportResult implements \JsonSerializable
 {
-    protected ?int $creativeId;
-    protected ?string $erid;
+    /** @var ?array<CreativeContentPatchImportResultErid> $erids */
+    protected ?array $erids;
 
-    public function __construct(?int $creativeId = null, ?string $erid = null)
+    /** @var ?array<int> $ids */
+    protected ?array $ids;
+
+    public function __construct(?array $erids = [], ?array $ids = [])
     {
-        $this->creativeId = $creativeId;
-        $this->erid = $erid;
+        $erids && (function(CreativeContentPatchImportResultErid ...$_) {})( ...$erids);
+        $this->erids = $erids;
+        $ids && (function(int ...$_) {})( ...$ids);
+        $this->ids = $ids;
     }
 
-    public function getCreativeId(): ?int
+    /**
+     * @return ?array<CreativeContentPatchImportResultErid>
+     */
+    public function getErids(): ?array
     {
-        return $this->creativeId;
+        return $this->erids;
     }
 
-    public function getErid(): ?string
+    /**
+     * @return ?array<int>
+     */
+    public function getIds(): ?array
     {
-        return $this->erid;
+        return $this->ids;
     }
 
     /**
@@ -39,12 +50,18 @@ class CreativeContentPatchAllResultErid implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
-            case "creativeId":
-                yield \Closure::fromCallable('intval');
+            case "erids":
+                yield fn ($array) => array_map(
+                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentPatchImportResultErid', 'create' ], $data),
+                    (array)$array
+                );
                 break;
 
-            case "erid":
-                yield \Closure::fromCallable('strval');
+            case "ids":
+                yield fn ($array) => array_map(
+                    \Closure::fromCallable('intval'),
+                    (array)$array
+                );
                 break;
         };
     }
@@ -68,8 +85,8 @@ class CreativeContentPatchAllResultErid implements \JsonSerializable
         // create
         /** @psalm-suppress PossiblyNullArgument */
         return new static(
-            $constructorParams["creativeId"] ?? null,
-            $constructorParams["erid"] ?? null
+            $constructorParams["erids"] ?? null,
+            $constructorParams["ids"] ?? null
         );
     }
 

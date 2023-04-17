@@ -9,6 +9,8 @@ use BeelineOrd\Data\Creative\CreativeEditModel;
 use BeelineOrd\Data\Creative\CreativeViewModel;
 use BeelineOrd\Data\CreativeContent\CreativeContentCreateModel;
 use BeelineOrd\Data\CreativeContent\CreativeContentEditModel;
+use BeelineOrd\Data\CreativeContent\CreativeContentImportResult;
+use BeelineOrd\Data\CreativeContent\CreativeContentPatchImportResultErid;
 use BeelineOrd\Data\CreativeContent\CreativeContentUploadResult;
 use BeelineOrd\Data\CreativeContent\CreativeContentViewModel;
 use BeelineOrd\Exception\FileException;
@@ -89,13 +91,14 @@ class CreativeEndpoint
         return $this->client->send(new CreativeContentGetRequest($creativeContentId));
     }
 
-    public function createContent(CreativeContentCreateModel $createModel)
+    public function createContent(CreativeContentCreateModel $createModel): CreativeContentPatchImportResultErid
     {
-        $result = $this->import([$createModel]);
-        if (count($result) !== 1) {
+        $result = $this->importContent([$createModel]);
+        $erids = $result->getErids();
+        if (count($erids) !== 1) {
             throw new \UnexpectedValueException('Method did not return created ID');
         }
-        return array_pop($result);
+        return array_pop($erids);
     }
 
     public function updateContent(int $creativeContentId, CreativeContentEditModel $editModel)
@@ -106,7 +109,7 @@ class CreativeEndpoint
     /**
      * @param list<CreativeContentCreateModel> $create
      * @param array<int, CreativeContentEditModel> $update
-     * @return CreativeCreateResult[]
+     * @return CreativeContentImportResult
      */
     public function importContent(array $create = [], array $update = [])
     {

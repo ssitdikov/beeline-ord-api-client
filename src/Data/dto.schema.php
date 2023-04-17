@@ -253,16 +253,16 @@ return dto\schema(
             ]
         ),
         dto\object(
-            name: 'CreativeContent\\CreativeContentPatchAllResultErid',
+            name: 'CreativeContent\\CreativeContentPatchImportResultErid',
             fields: [
                 dto\field('creativeId', t\int()),
                 dto\field('erid', t\string()),
             ]
         ),
         dto\object(
-            name: 'CreativeContent\\CreativeContentPatchAllResult',
+            name: 'CreativeContent\\CreativeContentImportResult',
             fields: [
-                dto\field('erids', t\list_(t\object('CreativeContent\\CreativeContentPatchAllResultErid'))),
+                dto\field('erids', t\list_(t\object('CreativeContent\\CreativeContentPatchImportResultErid'))),
                 dto\field('ids', t\list_(t\int())),
             ]
         ),
