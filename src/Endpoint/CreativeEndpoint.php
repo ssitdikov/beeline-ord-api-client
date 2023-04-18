@@ -54,7 +54,7 @@ class CreativeEndpoint
     {
         $result = $this->import([$createModel]);
         $ids = $result->getIds();
-        if (count($ids) !== 1) {
+        if (empty($ids)) {
             throw new \UnexpectedValueException('Method did not return created ID');
         }
 
@@ -96,7 +96,7 @@ class CreativeEndpoint
     {
         $result = $this->importContent([$createModel]);
         $erids = $result->getErids();
-        if (count($erids) !== 1) {
+        if (empty($erids)) {
             throw new \UnexpectedValueException('Method did not return created ID');
         }
         return array_pop($erids);

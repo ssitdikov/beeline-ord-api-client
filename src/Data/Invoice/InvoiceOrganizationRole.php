@@ -19,10 +19,10 @@ namespace BeelineOrd\Data\Invoice;
  * @property-read string $value
  *
  * Cases:
- * @method static InvoiceOrganizationRole ADVERTISING_AGENCY
- * @method static InvoiceOrganizationRole ADVERTISING_DISTRIBUTOR
- * @method static InvoiceOrganizationRole ADVERTISING_SYSTEM_OPERATOR
- * @method static InvoiceOrganizationRole ADVERTISER
+ * @method static InvoiceOrganizationRole ADVERTISING_AGENCY()
+ * @method static InvoiceOrganizationRole ADVERTISING_DISTRIBUTOR()
+ * @method static InvoiceOrganizationRole ADVERTISING_SYSTEM_OPERATOR()
+ * @method static InvoiceOrganizationRole ADVERTISER()
  */
 final class InvoiceOrganizationRole implements \JsonSerializable
 {

@@ -19,10 +19,10 @@ namespace BeelineOrd\Data\Creative;
  * @property-read string $value
  *
  * Cases:
- * @method static CreativeType OTHER
- * @method static CreativeType PAY_FOR_VIEWS
- * @method static CreativeType PAY_FOR_CLICKS
- * @method static CreativeType PAY_FOR_ACTIONS
+ * @method static CreativeType OTHER()
+ * @method static CreativeType PAY_FOR_VIEWS()
+ * @method static CreativeType PAY_FOR_CLICKS()
+ * @method static CreativeType PAY_FOR_ACTIONS()
  */
 final class CreativeType implements \JsonSerializable
 {

@@ -19,9 +19,9 @@ namespace BeelineOrd\Data\Platform;
  * @property-read string $value
  *
  * Cases:
- * @method static PlatformType SITE
- * @method static PlatformType APPLICATION
- * @method static PlatformType INFORMATION_SYSTEM
+ * @method static PlatformType SITE()
+ * @method static PlatformType APPLICATION()
+ * @method static PlatformType INFORMATION_SYSTEM()
  */
 final class PlatformType implements \JsonSerializable
 {

@@ -19,11 +19,11 @@ namespace BeelineOrd\Data\Contract;
  * @property-read string $value
  *
  * Cases:
- * @method static ContractActionType OTHER
- * @method static ContractActionType DISTRIBUTION
- * @method static ContractActionType CONCLUDE
- * @method static ContractActionType COMMERCIAL
- * @method static ContractActionType NONE
+ * @method static ContractActionType OTHER()
+ * @method static ContractActionType DISTRIBUTION()
+ * @method static ContractActionType CONCLUDE()
+ * @method static ContractActionType COMMERCIAL()
+ * @method static ContractActionType NONE()
  */
 final class ContractActionType implements \JsonSerializable
 {

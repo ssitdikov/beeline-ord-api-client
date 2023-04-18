@@ -19,8 +19,8 @@ namespace BeelineOrd\Data\Invoice;
  * @property-read string $value
  *
  * Cases:
- * @method static InvoiceType STATISTICS
- * @method static InvoiceType MANUAL
+ * @method static InvoiceType STATISTICS()
+ * @method static InvoiceType MANUAL()
  */
 final class InvoiceType implements \JsonSerializable
 {

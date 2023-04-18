@@ -19,8 +19,8 @@ namespace BeelineOrd\Data\OrganizationRef;
  * @property-read string $value
  *
  * Cases:
- * @method static OrganizationRefType FOREIGN_PHYSICAL_PERSON
- * @method static OrganizationRefType FOREIGN_LEGAL_PERSON
+ * @method static OrganizationRefType FOREIGN_PHYSICAL_PERSON()
+ * @method static OrganizationRefType FOREIGN_LEGAL_PERSON()
  */
 final class OrganizationRefType implements \JsonSerializable
 {

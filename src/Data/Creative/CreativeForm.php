@@ -19,14 +19,14 @@ namespace BeelineOrd\Data\Creative;
  * @property-read string $value
  *
  * Cases:
- * @method static CreativeForm BANNER
- * @method static CreativeForm TEXT_BLOCK
- * @method static CreativeForm TEXT_GRAPHIC_BLOCK
- * @method static CreativeForm VIDEO
- * @method static CreativeForm AUDIO_RECORD
- * @method static CreativeForm LIVE_AUDIO
- * @method static CreativeForm LIVE_VIDEO
- * @method static CreativeForm OTHER
+ * @method static CreativeForm BANNER()
+ * @method static CreativeForm TEXT_BLOCK()
+ * @method static CreativeForm TEXT_GRAPHIC_BLOCK()
+ * @method static CreativeForm VIDEO()
+ * @method static CreativeForm AUDIO_RECORD()
+ * @method static CreativeForm LIVE_AUDIO()
+ * @method static CreativeForm LIVE_VIDEO()
+ * @method static CreativeForm OTHER()
  */
 final class CreativeForm implements \JsonSerializable
 {
