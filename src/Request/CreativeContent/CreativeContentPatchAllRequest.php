@@ -2,14 +2,13 @@
 
 namespace BeelineOrd\Request\CreativeContent;
 
-use BeelineOrd\Data\Creative\CreativeCreateResult;
 use BeelineOrd\Data\CreativeContent\CreativeContentCreateModel;
 use BeelineOrd\Data\CreativeContent\CreativeContentEditModel;
-use BeelineOrd\Data\CreativeContent\CreativeContentPatchAllResult;
+use BeelineOrd\Data\CreativeContent\CreativeContentImportResult;
 use BeelineOrd\Request\AbstractRequest;
 
 /**
- * @extends AbstractRequest<CreativeCreateResult[]>
+ * @extends AbstractRequest<CreativeContentImportResult>
  */
 class CreativeContentPatchAllRequest extends AbstractRequest
 {
@@ -35,11 +34,11 @@ class CreativeContentPatchAllRequest extends AbstractRequest
 
     /**
      * @param array $body
-     * @return CreativeContentPatchAllResult
+     * @return CreativeContentImportResult
      */
     public function createResponse(array $body)
     {
-        return CreativeContentPatchAllResult::create($body);
+        return CreativeContentImportResult::create($body);
     }
 
 }

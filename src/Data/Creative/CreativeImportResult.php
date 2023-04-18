@@ -12,35 +12,23 @@ namespace BeelineOrd\Data\Creative;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class CreativeCreateResult implements \JsonSerializable
+class CreativeImportResult implements \JsonSerializable
 {
-    protected int $id;
+    /** @var ?array<int> $ids */
+    protected ?array $ids;
 
-    /** @deprecated removed in API v43 */
-    protected ?string $erid;
-
-    public function __construct(int $id, ?string $erid = null)
+    public function __construct(?array $ids = [])
     {
-        $this->id = $id;
-        $this->erid = $erid;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
+        $ids && (function(int ...$_) {})( ...$ids);
+        $this->ids = $ids;
     }
 
     /**
-     * @deprecated removed in API v43
+     * @return ?array<int>
      */
-    public function getErid(): ?string
+    public function getIds(): ?array
     {
-        return $this->erid;
-    }
-
-    protected static function required(): array
-    {
-        return ['id'];
+        return $this->ids;
     }
 
     /**
@@ -49,12 +37,11 @@ class CreativeCreateResult implements \JsonSerializable
     protected static function importers(string $key): iterable
     {
         switch ($key) {
-            case "id":
-                yield \Closure::fromCallable('intval');
-                break;
-
-            case "erid":
-                yield \Closure::fromCallable('strval');
+            case "ids":
+                yield fn ($array) => array_map(
+                    \Closure::fromCallable('intval'),
+                    (array)$array
+                );
                 break;
         };
     }
@@ -64,11 +51,6 @@ class CreativeCreateResult implements \JsonSerializable
      */
     public static function create(array $data): self
     {
-        // check required
-        if ($diff = array_diff(static::required(), array_keys($data))) {
-            throw new \InvalidArgumentException("missing keys: " . implode(", ", $diff));
-        }
-
         // import
         $constructorParams = [];
         foreach ($data as $key => $value) {
@@ -83,8 +65,7 @@ class CreativeCreateResult implements \JsonSerializable
         // create
         /** @psalm-suppress PossiblyNullArgument */
         return new static(
-            $constructorParams["id"],
-            $constructorParams["erid"] ?? null
+            $constructorParams["ids"] ?? null
         );
     }
 

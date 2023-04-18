@@ -139,10 +139,9 @@ return dto\schema(
         ]),
 
         dto\object(
-            name: 'Creative\\CreativeCreateResult',
+            name: 'Creative\\CreativeImportResult',
             fields: [
-                dto\field('id', t\int(), true),
-                dto\field('erid', t\string(), deprecated: 'removed in API v43'),
+                dto\field('ids', t\list_(t\int())),
             ]
         ),
         dto\object(
@@ -253,7 +252,7 @@ return dto\schema(
             ]
         ),
         dto\object(
-            name: 'CreativeContent\\CreativeContentPatchImportResultErid',
+            name: 'CreativeContent\\CreativeContentImportResultErid',
             fields: [
                 dto\field('creativeId', t\int()),
                 dto\field('erid', t\string()),
@@ -262,7 +261,7 @@ return dto\schema(
         dto\object(
             name: 'CreativeContent\\CreativeContentImportResult',
             fields: [
-                dto\field('erids', t\list_(t\object('CreativeContent\\CreativeContentPatchImportResultErid'))),
+                dto\field('erids', t\list_(t\object('CreativeContent\\CreativeContentImportResultErid'))),
                 dto\field('ids', t\list_(t\int())),
             ]
         ),

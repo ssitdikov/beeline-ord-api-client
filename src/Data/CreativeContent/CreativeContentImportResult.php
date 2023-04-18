@@ -14,7 +14,7 @@ namespace BeelineOrd\Data\CreativeContent;
  */
 class CreativeContentImportResult implements \JsonSerializable
 {
-    /** @var ?array<CreativeContentPatchImportResultErid> $erids */
+    /** @var ?array<CreativeContentImportResultErid> $erids */
     protected ?array $erids;
 
     /** @var ?array<int> $ids */
@@ -22,14 +22,14 @@ class CreativeContentImportResult implements \JsonSerializable
 
     public function __construct(?array $erids = [], ?array $ids = [])
     {
-        $erids && (function(CreativeContentPatchImportResultErid ...$_) {})( ...$erids);
+        $erids && (function(CreativeContentImportResultErid ...$_) {})( ...$erids);
         $this->erids = $erids;
         $ids && (function(int ...$_) {})( ...$ids);
         $this->ids = $ids;
     }
 
     /**
-     * @return ?array<CreativeContentPatchImportResultErid>
+     * @return ?array<CreativeContentImportResultErid>
      */
     public function getErids(): ?array
     {
@@ -52,7 +52,7 @@ class CreativeContentImportResult implements \JsonSerializable
         switch ($key) {
             case "erids":
                 yield fn ($array) => array_map(
-                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentPatchImportResultErid', 'create' ], $data),
+                    fn ($data) => call_user_func([ '\BeelineOrd\Data\CreativeContent\CreativeContentImportResultErid', 'create' ], $data),
                     (array)$array
                 );
                 break;

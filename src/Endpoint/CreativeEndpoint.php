@@ -4,13 +4,13 @@ namespace BeelineOrd\Endpoint;
 
 use BeelineOrd\ApiClient;
 use BeelineOrd\Data\Creative\CreativeCreateModel;
-use BeelineOrd\Data\Creative\CreativeCreateResult;
 use BeelineOrd\Data\Creative\CreativeEditModel;
+use BeelineOrd\Data\Creative\CreativeImportResult;
 use BeelineOrd\Data\Creative\CreativeViewModel;
 use BeelineOrd\Data\CreativeContent\CreativeContentCreateModel;
 use BeelineOrd\Data\CreativeContent\CreativeContentEditModel;
 use BeelineOrd\Data\CreativeContent\CreativeContentImportResult;
-use BeelineOrd\Data\CreativeContent\CreativeContentPatchImportResultErid;
+use BeelineOrd\Data\CreativeContent\CreativeContentImportResultErid;
 use BeelineOrd\Data\CreativeContent\CreativeContentUploadResult;
 use BeelineOrd\Data\CreativeContent\CreativeContentViewModel;
 use BeelineOrd\Exception\FileException;
@@ -50,14 +50,15 @@ class CreativeEndpoint
         return $this->client->send(new CreativeGetRequest($creativeId));
     }
 
-    public function create(CreativeCreateModel $createModel): CreativeCreateResult
+    public function create(CreativeCreateModel $createModel): int
     {
         $result = $this->import([$createModel]);
-        if (count($result) !== 1) {
+        $ids = $result->getIds();
+        if (count($ids) !== 1) {
             throw new \UnexpectedValueException('Method did not return created ID');
         }
 
-        return array_pop($result);
+        return array_pop($ids);
     }
 
     public function update(int $id, CreativeEditModel $editModel)
@@ -65,7 +66,7 @@ class CreativeEndpoint
         return $this->client->send(new CreativePatchRequest($id, $editModel));
     }
 
-    public function import(array $create = [], array $update = [])
+    public function import(array $create = [], array $update = []): CreativeImportResult
     {
         return $this->client->send(new CreativePatchAllRequest($create, $update));
     }
@@ -91,7 +92,7 @@ class CreativeEndpoint
         return $this->client->send(new CreativeContentGetRequest($creativeContentId));
     }
 
-    public function createContent(CreativeContentCreateModel $createModel): CreativeContentPatchImportResultErid
+    public function createContent(CreativeContentCreateModel $createModel): CreativeContentImportResultErid
     {
         $result = $this->importContent([$createModel]);
         $erids = $result->getErids();

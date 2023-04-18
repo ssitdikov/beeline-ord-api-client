@@ -12,7 +12,7 @@ namespace BeelineOrd\Data\CreativeContent;
  * @link https://github.com/klkvsk/dto-generator
  * @link https://packagist.org/klkvsk/dto-generator
  */
-class CreativeContentPatchImportResultErid implements \JsonSerializable
+class CreativeContentImportResultErid implements \JsonSerializable
 {
     protected ?int $creativeId;
     protected ?string $erid;
