@@ -8,6 +8,7 @@ use BeelineOrd\Authorization\Credentials;
 use BeelineOrd\Endpoint\AuthorizationEndpoint;
 use BeelineOrd\Endpoint\ContractEndpoint;
 use BeelineOrd\Endpoint\CreativeEndpoint;
+use BeelineOrd\Endpoint\CreativeStatisticsEndpoint;
 use BeelineOrd\Endpoint\PlatformEndpoint;
 use BeelineOrd\Endpoint\UserEndpoint;
 use BeelineOrd\Exception\ResponseValidationException;
@@ -45,6 +46,7 @@ class ApiClient
     protected PlatformEndpoint $platformEndpoint;
     protected ContractEndpoint $contractEndpoint;
     protected CreativeEndpoint $creativeEndpoint;
+    protected CreativeStatisticsEndpoint $creativeStatisticsEndpoint;
 
     public function __construct(
         Credentials         $credentials,
@@ -71,6 +73,7 @@ class ApiClient
         $this->platformEndpoint = new PlatformEndpoint($this);
         $this->contractEndpoint = new ContractEndpoint($this);
         $this->creativeEndpoint = new CreativeEndpoint($this);
+        $this->creativeStatisticsEndpoint = new CreativeStatisticsEndpoint($this);
     }
 
     public function getToken(): AuthorizationToken
@@ -96,6 +99,11 @@ class ApiClient
     public function creative(): CreativeEndpoint
     {
         return $this->creativeEndpoint;
+    }
+
+    public function creativeStatistics(): CreativeStatisticsEndpoint
+    {
+        return $this->creativeStatisticsEndpoint;
     }
 
     /**
